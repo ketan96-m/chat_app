@@ -2,12 +2,30 @@
 
 {% block body %}
 <h1>Login Page</h1>
-    <form name="auth-form" action={{ url_for("login") }} method="post">
+    <form name="auth-form" id ="auth-form" action={{ url_for("login") }} method="post">
         <label for="username">Username:</label><br>
         <input type="text" id="username" name="username"><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password">
-        <input type="submit" value="Login">
-        <input type="submit" value="Register">
+        <input type="submit" value="Login" onclick="setActionForm('login')">
+        <input type="submit" value="Register" onclick="setActionForm('register')">
       </form>
+
+
+      <script>
+        function setActionForm(action){
+            let form = document.getElementById("auth-form");
+            if (action=="login"){
+                form.action="{{url_for('login')}}";
+                form.method="post";
+                form.submit();
+            }else{
+                form.action="{{url_for('register')}}";
+                form.method="post";
+                form.submit();
+
+
+            }
+        }
+      </script>
 {% endblock %}

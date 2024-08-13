@@ -42,13 +42,12 @@ class User(db.Model):
 
 @app.route("/login", methods=['GET','POST'])
 def login():
-
     if request.method=="POST":
         username = request.form.get('username')
         password = request.form.get('password')
         user = User.query.filter_by(userid = username).first()
-        if user==username and user.check_password(password):
-            return render_template("dashboard.html",  user= username)
+        if user.userid==username and user.check_password(password):
+            return redirect(url_for("dashboard", username=user.userid))
         else:
             return render_template("login.html")
     elif request.method=="GET":
@@ -62,13 +61,18 @@ def register():
     if user:
         return render_template("login.html", error="User already exists!")
     else:
-        new_user = User(username)
+        new_user = User(userid=username)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        session[username] = username
+        session['username'] = username
         return redirect(url_for("dashboard"))
 
+@app.route("/dashboard")
+def dashboard():
+    if "username" in session:
+        return render_template("dashboard.html", username=session['username'])
+    return redirect(url_for("login"))
 
 
 # @app.route("/register", method=['GET','POST'])
